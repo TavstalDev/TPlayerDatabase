@@ -1,7 +1,7 @@
 ﻿using System;
 using Tavstal.TLibrary.Compatibility.Database;
 
-namespace Tavstal.TExample.Models
+namespace Tavstal.TPlayerDatabase.Models
 {
     [Serializable]
     public class PlayerData

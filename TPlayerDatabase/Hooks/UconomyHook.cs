@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Rocket.API;
 using Rocket.Core;
-using Rocket.Unturned.Player;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ using Tavstal.TLibrary.Compatibility.Economy;
 using Tavstal.TLibrary.Compatibility.Interfaces.Economy;
 using Tavstal.TLibrary.Extensions;
 
-namespace Tavstal.TExample.Hooks
+namespace Tavstal.TPlayerDatabase.Hooks
 {
     public class UconomyHook : Hook, IEconomyProvider
     {
@@ -27,47 +26,47 @@ namespace Tavstal.TExample.Hooks
         private object _uconomyConfig;
 
 
-        public UconomyHook() : base(ExampleMain.Instance, "uconomy_exampleplugin", true) { }
+        public UconomyHook() : base(TPlayerDatabase.Instance, "uconomy_exampleplugin", true) { }
 
         public override void OnLoad()
         {
             try
             {
-                ExampleMain.Logger.Log("Loading Uconomy hook...");
+                TPlayerDatabase.Logger.Log("Loading Uconomy hook...");
 
-                ExampleMain.Logger.LogDebug("UconomyHook #1: Searching for IRocketPlugin");
+                TPlayerDatabase.Logger.LogDebug("UconomyHook #1: Searching for IRocketPlugin");
                 IRocketPlugin uconomyPlugin = R.Plugins.GetPlugins().FirstOrDefault(c => c.Name.EqualsIgnoreCase("uconomy"));
 
-                ExampleMain.Logger.LogDebug($"UconomyHook #2: Searching for plugin type. IRocketPlugin valid?: {uconomyPlugin != null}");
+                TPlayerDatabase.Logger.LogDebug($"UconomyHook #2: Searching for plugin type. IRocketPlugin valid?: {uconomyPlugin != null}");
                 Type uconomyType = uconomyPlugin.GetType().Assembly.GetType("fr34kyn01535.Uconomy.Uconomy");
 
-                ExampleMain.Logger.LogDebug($"UconomyHook #3: Searching for plugin instance. Plugin type valid?: {uconomyType != null}");
+                TPlayerDatabase.Logger.LogDebug($"UconomyHook #3: Searching for plugin instance. Plugin type valid?: {uconomyType != null}");
                 _pluginInstance = uconomyType.GetField("Instance", BindingFlags.Static | BindingFlags.Public).GetValue(uconomyPlugin);
 
 
-                ExampleMain.Logger.LogDebug($"UconomyHook #4: Searching for plugin instance type. Plugin instance valid?: {_pluginInstance != null}");
+                TPlayerDatabase.Logger.LogDebug($"UconomyHook #4: Searching for plugin instance type. Plugin instance valid?: {_pluginInstance != null}");
                 Type pluginInstanceType = _pluginInstance.GetType();
 
-                ExampleMain.Logger.LogDebug($"UconomyHook #5: Searching for plugin configuration. Plugin instance type valid?: {pluginInstanceType != null}");
+                TPlayerDatabase.Logger.LogDebug($"UconomyHook #5: Searching for plugin configuration. Plugin instance type valid?: {pluginInstanceType != null}");
                 object uconomyConfigInst = uconomyType.GetProperty("Configuration").GetValue(uconomyPlugin);
 
                 _uconomyConfig = uconomyConfigInst.GetType().GetProperty("Instance").GetValue(uconomyConfigInst);
 
-                ExampleMain.Logger.LogDebug($"UconomyHook #6: Searching for plugin database. Plugin config valid?: {_uconomyConfig != null}");
+                TPlayerDatabase.Logger.LogDebug($"UconomyHook #6: Searching for plugin database. Plugin config valid?: {_uconomyConfig != null}");
                 _databaseInstance = pluginInstanceType.GetField("Database").GetValue(_pluginInstance);
 
-                ExampleMain.Logger.LogDebug($"UconomyHook #7: Getting database methods. Database instance valid?: {_databaseInstance != null}");
+                TPlayerDatabase.Logger.LogDebug($"UconomyHook #7: Getting database methods. Database instance valid?: {_databaseInstance != null}");
                 _getBalanceMethod = _databaseInstance.GetType().GetMethod(
                     "GetBalance", new[] { typeof(string) });
 
                 _increaseBalanceMethod = _databaseInstance.GetType().GetMethod(
                     "IncreaseBalance", new[] { typeof(string), typeof(decimal) });
-                ExampleMain.Logger.LogDebug($"UconomyHook #8: Getting translation method");
+                TPlayerDatabase.Logger.LogDebug($"UconomyHook #8: Getting translation method");
                 if (pluginInstanceType.GetMethods().Any(x => x.Name == "Localize"))
                     _getTranslation = pluginInstanceType.GetMethod("Localize", new[] { typeof(string), typeof(object[]) });
                 else
                     _getTranslation = pluginInstanceType.GetMethod("Translate", new[] { typeof(string), typeof(object[]) });
-                ExampleMain.Logger.LogDebug($"UconomyHook #9: Searching for events");
+                TPlayerDatabase.Logger.LogDebug($"UconomyHook #9: Searching for events");
                 #region Create Event Delegates
                 /* Added because it might be needed in the future
                 var parentPlugin = TShop.Instance;
@@ -84,8 +83,8 @@ namespace Tavstal.TExample.Hooks
                 }
                 catch (Exception ex)
                 {
-                    ExampleMain.Logger.LogError("Uconomy hook onPlayerPay delegate error:");
-                    ExampleMain.Logger.LogError(ex.ToString());
+                    TPlayerDatabase.Logger.LogError("Uconomy hook onPlayerPay delegate error:");
+                    TPlayerDatabase.Logger.LogError(ex.ToString());
                 }
 
                 try
@@ -97,19 +96,19 @@ namespace Tavstal.TExample.Hooks
                 }
                 catch (Exception ex)
                 {
-                    ExampleMain.Logger.LogError("Uconomy hook onBalanceUpdate delegate error:");
-                    ExampleMain.Logger.LogError(ex.ToString());
+                    TPlayerDatabase.Logger.LogError("Uconomy hook onBalanceUpdate delegate error:");
+                    TPlayerDatabase.Logger.LogError(ex.ToString());
                 }*/
                 #endregion
 
-                ExampleMain.Logger.LogException("Currency Name >> " + GetCurrencyName());
-                ExampleMain.Logger.LogException("Initial Balance >> " + GetConfigValue<decimal>("InitialBalance").ToString());
-                ExampleMain.Logger.Log("Uconomy hook loaded.");
+                TPlayerDatabase.Logger.LogException("Currency Name >> " + GetCurrencyName());
+                TPlayerDatabase.Logger.LogException("Initial Balance >> " + GetConfigValue<decimal>("InitialBalance").ToString());
+                TPlayerDatabase.Logger.Log("Uconomy hook loaded.");
             }
             catch (Exception e)
             {
-                ExampleMain.Logger.LogError("Failed to load Uconomy hook");
-                ExampleMain.Logger.LogError(e.ToString());
+                TPlayerDatabase.Logger.LogError("Failed to load Uconomy hook");
+                TPlayerDatabase.Logger.LogError(e.ToString());
             }
         }
 
@@ -135,7 +134,7 @@ namespace Tavstal.TExample.Hooks
                 }
                 catch
                 {
-                    ExampleMain.Logger.LogError($"Failed to get '{VariableName}' variable!");
+                    TPlayerDatabase.Logger.LogError($"Failed to get '{VariableName}' variable!");
                     return default;
                 }
             }
@@ -149,7 +148,7 @@ namespace Tavstal.TExample.Hooks
             }
             catch
             {
-                ExampleMain.Logger.LogError($"Failed to get config jobj.");
+                TPlayerDatabase.Logger.LogError($"Failed to get config jobj.");
                 return null;
             }
         }

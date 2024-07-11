@@ -1,22 +1,22 @@
 ﻿using SDG.Unturned;
 using System.Collections.Generic;
-using Tavstal.TExample.Handlers;
-using Tavstal.TExample.Hooks;
-using Tavstal.TExample.Managers;
+using Tavstal.TPlayerDatabase.Handlers;
+using Tavstal.TPlayerDatabase.Hooks;
+using Tavstal.TPlayerDatabase.Managers;
 using Tavstal.TLibrary.Compatibility;
 using Tavstal.TLibrary.Compatibility.Economy;
 using Tavstal.TLibrary.Managers;
 using Logger = Rocket.Core.Logging.Logger;
 
-namespace Tavstal.TExample
+namespace Tavstal.TPlayerDatabase
 {
     /// <summary>
     /// The main plugin class.
     /// </summary>
-    public class ExampleMain : PluginBase<ExampleConfig>
+    public class TPlayerDatabase : PluginBase<TPlayerDatabaseConfig>
     {
-        public new static ExampleMain Instance { get; private set; }
-        public new static TLogger Logger = new TLogger("TExample", false);
+        public new static TPlayerDatabase Instance { get; private set; }
+        public new static TLogger Logger = new TLogger("TPlayerDatabase", false);
         public new static DatabaseManager DatabaseManager { get; private set; }
         /// <summary>
         /// Used to prevent error spamming that is related to database configuration.
@@ -38,7 +38,7 @@ namespace Tavstal.TExample
             Logger.Log("#########################################");
             Logger.Log("# Thanks for using my plugin");
             Logger.Log($"# Plugin Created By {VersionInfo.CompanyName}");
-            Logger.Log("# Discord: @YourDiscordName");
+            Logger.Log("# Discord: @TavstalDev");
             Logger.Log("# Website: https://your.website.example");
             Logger.Log("# Discord Guild: https://discord.gg/your_invite");
             // Please do not remove this region and its code, because the license require credits to the author.

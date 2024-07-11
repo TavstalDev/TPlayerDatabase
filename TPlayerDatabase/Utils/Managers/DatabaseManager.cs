@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tavstal.TExample.Models;
+using Tavstal.TPlayerDatabase.Models;
 using Tavstal.TLibrary.Compatibility;
 using Tavstal.TLibrary.Compatibility.Database;
 using Tavstal.TLibrary.Compatibility.Interfaces;
@@ -10,12 +10,12 @@ using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Managers;
 
-namespace Tavstal.TExample.Managers
+namespace Tavstal.TPlayerDatabase.Managers
 {
     public class DatabaseManager : DatabaseManagerBase
     {
 #pragma warning disable IDE1006 //
-        private static ExampleConfig _pluginConfig => ExampleMain.Instance.Config;
+        private static TPlayerDatabaseConfig _pluginConfig => TPlayerDatabase.Instance.Config;
 #pragma warning restore IDE1006 //
 
         public DatabaseManager(IPlugin plugin, IConfigurationBase config) : base(plugin, config)
@@ -34,7 +34,7 @@ namespace Tavstal.TExample.Managers
                 using (var connection = CreateConnection())
                 {
                     if (!await connection.OpenSafeAsync())
-                        ExampleMain.IsConnectionAuthFailed = true;
+                        TPlayerDatabase.IsConnectionAuthFailed = true;
                     if (connection.State != System.Data.ConnectionState.Open)
                         throw new Exception("# Failed to connect to the database. Please check the plugin's config file.");
 
@@ -50,25 +50,25 @@ namespace Tavstal.TExample.Managers
             }
             catch (Exception ex)
             {
-                ExampleMain.Logger.LogException("Error in checkSchema:");
-                ExampleMain.Logger.LogError(ex);
+                TPlayerDatabase.Logger.LogException("Error in checkSchema:");
+                TPlayerDatabase.Logger.LogError(ex);
             }
         }
 
         #region Player Table
-        public async Task<bool> AddPlayer(ulong steamId, string steamName, string characterName)
+        public async Task<bool> AddPlayerAsync(ulong steamId, string steamName, string characterName)
         {
             MySqlConnection MySQLConnection = CreateConnection();
             return await MySQLConnection.AddTableRowAsync(tableName: _pluginConfig.Database.DatabaseTable_Players, value: new PlayerData(steamId, steamName, characterName, DateTime.Now));
         }
 
-        public async Task<bool> RemovePlayer(ulong steamId)
+        public async Task<bool> RemovePlayerAsync(ulong steamId)
         {
             MySqlConnection MySQLConnection = CreateConnection();
             return  await MySQLConnection.RemoveTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: $"SteamId='{steamId}'", parameters: null);
         }
 
-        public async Task<bool> UpdatePlayer(ulong steamId, string characterName)
+        public async Task<bool> UpdatePlayerAsync(ulong steamId, string characterName)
         {
             MySqlConnection MySQLConnection = CreateConnection();
             return await MySQLConnection.UpdateTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, $"SteamId='{steamId}'", new List<SqlParameter>
@@ -78,13 +78,13 @@ namespace Tavstal.TExample.Managers
             });
         }
 
-        public async Task<List<PlayerData>> GetPlayers()
+        public async Task<List<PlayerData>> GetPlayersAsync()
         {
             MySqlConnection MySQLConnection = CreateConnection();
             return await MySQLConnection.GetTableRowsAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: string.Empty, null);
         }
 
-        public async Task<PlayerData> FindPlayer(ulong steamId)
+        public async Task<PlayerData> FindPlayerAsync(ulong steamId)
         {
             MySqlConnection MySQLConnection = CreateConnection();
             return await MySQLConnection.GetTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: $"SteamId='{steamId}'", null);

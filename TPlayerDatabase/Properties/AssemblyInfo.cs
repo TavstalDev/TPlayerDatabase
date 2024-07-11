@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TExample")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TPlayerDatabase")]
+[assembly: AssemblyDescription("Basic database plugin for storing some information about the players.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tavstal")]
-[assembly: AssemblyProduct("TExample")]
+[assembly: AssemblyProduct("TPlayerDatabase")]
 [assembly: AssemblyCopyright("Copyright © 2024 Tavstal")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("en")]
