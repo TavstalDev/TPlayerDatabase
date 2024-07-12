@@ -95,12 +95,6 @@ namespace Tavstal.TPlayerDatabase
         }
 
 
-        public override Dictionary<string, string> DefaultLocalization =>
-           new Dictionary<string, string>
-           {
-               { "prefix", $"&e[{GetPluginName()}]" },
-               { "error_player_not_found", "&cPlayer was not found." },
-               { "success_command_example_hi_sent", "&aThe message has been successfully sent to the player." }
-           };
+        public override Dictionary<string, string> DefaultLocalization => new Dictionary<string, string> {};
     }
 }
