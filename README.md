@@ -1,6 +1,11 @@
-# TExample
+# TPlayerDatabase
 RocketMod 4 Plugin for Unturned
 
-This is a template project using <a href="https://github.com/TavstalDev/TLibrary">TLibrary</a>.
+### What is this?
+This is the source code of a .NETFramework library written in C#. This library is a plugin made for Unturned 3.24.x+ servers. 
 
-Feel free to use it with TLibrary, but please provide credits.
+### Description
+A basic plugin for storing a few information about the players. 
+
+### Features
+- Stores the player's steam id, name and unturned character name.
