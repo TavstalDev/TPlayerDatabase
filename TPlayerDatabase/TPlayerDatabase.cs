@@ -1,12 +1,8 @@
 ﻿using SDG.Unturned;
 using System.Collections.Generic;
-using Tavstal.TPlayerDatabase.Handlers;
-using Tavstal.TPlayerDatabase.Hooks;
-using Tavstal.TPlayerDatabase.Managers;
-using Tavstal.TLibrary.Compatibility;
-using Tavstal.TLibrary.Compatibility.Economy;
-using Tavstal.TLibrary.Managers;
-using Logger = Rocket.Core.Logging.Logger;
+using Tavstal.TLibrary.Models.Plugin;
+using Tavstal.TPlayerDatabase.Utils.Handlers;
+using Tavstal.TPlayerDatabase.Utils.Managers;
 
 namespace Tavstal.TPlayerDatabase
 {
@@ -16,13 +12,12 @@ namespace Tavstal.TPlayerDatabase
     public class TPlayerDatabase : PluginBase<TPlayerDatabaseConfig>
     {
         public new static TPlayerDatabase Instance { get; private set; }
-        public new static TLogger Logger = new TLogger("TPlayerDatabase", false);
+        public new static readonly TLogger Logger = new TLogger("TPlayerDatabase", false);
         public new static DatabaseManager DatabaseManager { get; private set; }
         /// <summary>
         /// Used to prevent error spamming that is related to database configuration.
         /// </summary>
         public static bool IsConnectionAuthFailed { get; set; }
-        public static IEconomyProvider EconomyProvider { get; private set; }
 
         /// <summary>
         /// Fired when the plugin is loaded.
@@ -75,26 +70,12 @@ namespace Tavstal.TPlayerDatabase
             if (IsConnectionAuthFailed)
             {
                 Logger.LogWarning($"# Unloading {GetPluginName()} due to database authentication error.");
-                this?.UnloadPlugin();
-                return;
+                UnloadPlugin();
+                //return;
             }
-
-            Logger.LogLateInit();
-            Logger.LogWarning("# Searching for economy plugin...");
-            // Create HookManager and load all hooks
-            HookManager = new HookManager(this);
-            HookManager.LoadAll(Assembly);
-
-            if (!HookManager.IsHookLoadable<UconomyHook>())
-            {
-                Logger.LogError($"# Failed to load economy hook. Unloading {GetPluginName()}...");
-                this?.UnloadPlugin();
-                return;
-            }
-            EconomyProvider = HookManager.GetHook<UconomyHook>();
         }
 
 
-        public override Dictionary<string, string> DefaultLocalization => new Dictionary<string, string> {};
+        public override Dictionary<string, string> DefaultLocalization => new Dictionary<string, string>();
     }
 }

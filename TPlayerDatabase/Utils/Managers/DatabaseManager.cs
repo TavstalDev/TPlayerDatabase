@@ -1,16 +1,15 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tavstal.TPlayerDatabase.Models;
-using Tavstal.TLibrary.Compatibility;
-using Tavstal.TLibrary.Compatibility.Database;
-using Tavstal.TLibrary.Compatibility.Interfaces;
+using MySql.Data.MySqlClient;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Managers;
+using Tavstal.TLibrary.Models.Database;
+using Tavstal.TLibrary.Models.Plugin;
+using Tavstal.TPlayerDatabase.Models;
 
-namespace Tavstal.TPlayerDatabase.Managers
+namespace Tavstal.TPlayerDatabase.Utils.Managers
 {
     public class DatabaseManager : DatabaseManagerBase
     {
@@ -45,7 +44,7 @@ namespace Tavstal.TPlayerDatabase.Managers
                         await connection.CreateTableAsync<PlayerData>(_pluginConfig.Database.DatabaseTable_Players);
 
                     if (connection.State != System.Data.ConnectionState.Closed)
-                        connection.Close();
+                        await connection.CloseAsync();
                 }
             }
             catch (Exception ex)

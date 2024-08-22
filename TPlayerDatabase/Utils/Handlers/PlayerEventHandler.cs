@@ -2,7 +2,7 @@
 using Rocket.Unturned.Player;
 using Tavstal.TPlayerDatabase.Models;
 
-namespace Tavstal.TPlayerDatabase.Handlers
+namespace Tavstal.TPlayerDatabase.Utils.Handlers
 {
     public static class PlayerEventHandler
     {

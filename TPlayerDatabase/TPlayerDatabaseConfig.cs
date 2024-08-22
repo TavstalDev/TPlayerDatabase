@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Tavstal.TPlayerDatabase.Models;
-using Tavstal.TLibrary.Compatibility;
+using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TPlayerDatabase
 {
@@ -9,7 +9,7 @@ namespace Tavstal.TPlayerDatabase
         [JsonProperty(Order = 3)]
         public DatabaseData Database { get; set; }
 
-        public override void LoadDefaults()
+        public new void LoadDefaults()
         {
             Database = new DatabaseData("tpdb_players");
         }
