@@ -14,6 +14,7 @@ namespace Tavstal.TPlayerDatabase
         public new static TPlayerDatabase Instance { get; private set; }
         public new static readonly TLogger Logger = new TLogger("TPlayerDatabase", false);
         public new static DatabaseManager DatabaseManager { get; private set; }
+        
         /// <summary>
         /// Used to prevent error spamming that is related to database configuration.
         /// </summary>
