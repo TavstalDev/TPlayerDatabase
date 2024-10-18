@@ -11,9 +11,9 @@ namespace Tavstal.TPlayerDatabase
     /// </summary>
     public class TPlayerDatabase : PluginBase<TPlayerDatabaseConfig>
     {
-        public new static TPlayerDatabase Instance { get; private set; }
+        public static TPlayerDatabase Instance { get; private set; }
         public new static readonly TLogger Logger = new TLogger("TPlayerDatabase", false);
-        public new static DatabaseManager DatabaseManager { get; private set; }
+        public static DatabaseManager DatabaseManager { get; private set; }
         
         /// <summary>
         /// Used to prevent error spamming that is related to database configuration.
