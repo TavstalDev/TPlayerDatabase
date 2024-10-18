@@ -6,7 +6,7 @@ namespace Tavstal.TPlayerDatabase.Models
     [Serializable]
     public class PlayerData
     {
-        [SqlMember("SteamId", "varchar(17)", isPrimaryKey: true, isUnsigned: true)]
+        [SqlMember("SteamId", "varchar(17)", isPrimaryKey: true)]
         public ulong SteamId { get; set; }
         [SqlMember("SteamName", "varchar(32)")]
         public string SteamName { get; set; }
