@@ -57,20 +57,20 @@ namespace Tavstal.TPlayerDatabase.Utils.Managers
         #region Player Table
         public async Task<bool> AddPlayerAsync(ulong steamId, string steamName, string characterName)
         {
-            MySqlConnection MySQLConnection = CreateConnection();
-            return await MySQLConnection.AddTableRowAsync(tableName: _pluginConfig.Database.DatabaseTable_Players, value: new PlayerData(steamId, steamName, characterName, DateTime.Now));
+            MySqlConnection mySqlConnection = CreateConnection();
+            return await mySqlConnection.AddTableRowAsync(tableName: _pluginConfig.Database.DatabaseTable_Players, value: new PlayerData(steamId, steamName, characterName, DateTime.Now));
         }
 
         public async Task<bool> RemovePlayerAsync(ulong steamId)
         {
-            MySqlConnection MySQLConnection = CreateConnection();
-            return  await MySQLConnection.RemoveTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: $"SteamId='{steamId}'", parameters: null);
+            MySqlConnection mySqlConnection = CreateConnection();
+            return  await mySqlConnection.RemoveTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: $"SteamId='{steamId}'", parameters: null);
         }
 
         public async Task<bool> UpdatePlayerAsync(ulong steamId, string characterName)
         {
-            MySqlConnection MySQLConnection = CreateConnection();
-            return await MySQLConnection.UpdateTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, $"SteamId='{steamId}'", new List<SqlParameter>
+            MySqlConnection mySqlConnection = CreateConnection();
+            return await mySqlConnection.UpdateTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, $"SteamId='{steamId}'", new List<SqlParameter>
             {
                 SqlParameter.Get<PlayerData>(x => x.LastCharacterName, characterName),
                 SqlParameter.Get<PlayerData>(x => x.LastLogin, DateTime.Now)
@@ -79,14 +79,14 @@ namespace Tavstal.TPlayerDatabase.Utils.Managers
 
         public async Task<List<PlayerData>> GetPlayersAsync()
         {
-            MySqlConnection MySQLConnection = CreateConnection();
-            return await MySQLConnection.GetTableRowsAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: string.Empty, null);
+            MySqlConnection mySqlConnection = CreateConnection();
+            return await mySqlConnection.GetTableRowsAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: string.Empty, null);
         }
 
         public async Task<PlayerData> FindPlayerAsync(ulong steamId)
         {
-            MySqlConnection MySQLConnection = CreateConnection();
-            return await MySQLConnection.GetTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: $"SteamId='{steamId}'", null);
+            MySqlConnection mySqlConnection = CreateConnection();
+            return await mySqlConnection.GetTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: $"SteamId='{steamId}'", null);
         }
         #endregion
     }
