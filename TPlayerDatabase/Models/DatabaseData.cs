@@ -7,10 +7,10 @@ namespace Tavstal.TPlayerDatabase.Models
     {
         // Note: It starts from 7 because there are 6 defined property in the base class
         [JsonProperty(Order = 7)]
-        public string DatabaseTable_Players { get; set; }
+        public string PlayersTable { get; set; }
         public DatabaseData(string tableName) 
         {
-            DatabaseTable_Players = tableName;
+            PlayersTable = tableName;
         }
     }
 }

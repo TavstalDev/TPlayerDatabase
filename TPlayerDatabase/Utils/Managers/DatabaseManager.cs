@@ -13,9 +13,8 @@ namespace Tavstal.TPlayerDatabase.Utils.Managers
 {
     public class DatabaseManager : DatabaseManagerBase
     {
-#pragma warning disable IDE1006 //
-        private static TPlayerDatabaseConfig _pluginConfig => TPlayerDatabase.Instance.Config;
-#pragma warning restore IDE1006 //
+        // ReSharper disable once InconsistentNaming
+        private static PlayerDatabaseConfig _pluginConfig => TPlayerDatabase.Instance.Config;
 
         public DatabaseManager(IPlugin plugin, IConfigurationBase config) : base(plugin, config)
         {
@@ -38,10 +37,10 @@ namespace Tavstal.TPlayerDatabase.Utils.Managers
                         throw new Exception("# Failed to connect to the database. Please check the plugin's config file.");
 
                     // Player Table
-                    if (await connection.DoesTableExistAsync<PlayerData>(_pluginConfig.Database.DatabaseTable_Players))
-                        await connection.CheckTableAsync<PlayerData>(_pluginConfig.Database.DatabaseTable_Players);
+                    if (await connection.DoesTableExistAsync<PlayerData>(_pluginConfig.Database.PlayersTable))
+                        await connection.CheckTableAsync<PlayerData>(_pluginConfig.Database.PlayersTable);
                     else
-                        await connection.CreateTableAsync<PlayerData>(_pluginConfig.Database.DatabaseTable_Players);
+                        await connection.CreateTableAsync<PlayerData>(_pluginConfig.Database.PlayersTable);
 
                     if (connection.State != System.Data.ConnectionState.Closed)
                         await connection.CloseAsync();
@@ -58,19 +57,19 @@ namespace Tavstal.TPlayerDatabase.Utils.Managers
         public async Task<bool> AddPlayerAsync(ulong steamId, string steamName, string characterName)
         {
             MySqlConnection mySqlConnection = CreateConnection();
-            return await mySqlConnection.AddTableRowAsync(tableName: _pluginConfig.Database.DatabaseTable_Players, value: new PlayerData(steamId, steamName, characterName, DateTime.Now));
+            return await mySqlConnection.AddTableRowAsync(tableName: _pluginConfig.Database.PlayersTable, value: new PlayerData(steamId, steamName, characterName, DateTime.Now));
         }
 
         public async Task<bool> RemovePlayerAsync(ulong steamId)
         {
             MySqlConnection mySqlConnection = CreateConnection();
-            return  await mySqlConnection.RemoveTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: $"SteamId='{steamId}'", parameters: null);
+            return  await mySqlConnection.RemoveTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.PlayersTable, whereClause: $"SteamId='{steamId}'", parameters: null);
         }
 
         public async Task<bool> UpdatePlayerAsync(ulong steamId, string characterName)
         {
             MySqlConnection mySqlConnection = CreateConnection();
-            return await mySqlConnection.UpdateTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, $"SteamId='{steamId}'", new List<SqlParameter>
+            return await mySqlConnection.UpdateTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.PlayersTable, $"SteamId='{steamId}'", new List<SqlParameter>
             {
                 SqlParameter.Get<PlayerData>(x => x.LastCharacterName, characterName),
                 SqlParameter.Get<PlayerData>(x => x.LastLogin, DateTime.Now)
@@ -80,13 +79,13 @@ namespace Tavstal.TPlayerDatabase.Utils.Managers
         public async Task<List<PlayerData>> GetPlayersAsync()
         {
             MySqlConnection mySqlConnection = CreateConnection();
-            return await mySqlConnection.GetTableRowsAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: string.Empty, null);
+            return await mySqlConnection.GetTableRowsAsync<PlayerData>(tableName: _pluginConfig.Database.PlayersTable, whereClause: string.Empty, null);
         }
 
         public async Task<PlayerData> FindPlayerAsync(ulong steamId)
         {
             MySqlConnection mySqlConnection = CreateConnection();
-            return await mySqlConnection.GetTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.DatabaseTable_Players, whereClause: $"SteamId='{steamId}'", null);
+            return await mySqlConnection.GetTableRowAsync<PlayerData>(tableName: _pluginConfig.Database.PlayersTable, whereClause: $"SteamId='{steamId}'", null);
         }
         #endregion
     }

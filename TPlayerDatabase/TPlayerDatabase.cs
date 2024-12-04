@@ -9,7 +9,8 @@ namespace Tavstal.TPlayerDatabase
     /// <summary>
     /// The main plugin class.
     /// </summary>
-    public class TPlayerDatabase : PluginBase<TPlayerDatabaseConfig>
+    // ReSharper disable once InconsistentNaming
+    public class TPlayerDatabase : PluginBase<PlayerDatabaseConfig>
     {
         public static TPlayerDatabase Instance { get; private set; }
         public new static readonly TLogger Logger = new TLogger("TPlayerDatabase", false);
@@ -33,7 +34,7 @@ namespace Tavstal.TPlayerDatabase
 
             Logger.Log("#########################################");
             Logger.Log("# Thanks for using my plugin");
-            Logger.Log($"# Plugin Created By {VersionInfo.CompanyName}");
+            Logger.Log($"# Plugin Created By Tavstal");
             Logger.Log("# Discord: @TavstalDev");
             Logger.Log("# Website: https://your.website.example");
             Logger.Log("# Discord Guild: https://discord.gg/your_invite");

@@ -8,6 +8,7 @@ namespace Tavstal.TPlayerDatabase.Utils.Handlers
     public static class PlayerEventHandler
     {
         private static bool _isAttached;
+        // ReSharper disable once InconsistentNaming
         private static readonly List<UnturnedPlayer> _players = new List<UnturnedPlayer>();
         public static List<UnturnedPlayer> Players => _players;
 

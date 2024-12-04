@@ -4,7 +4,7 @@ using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TPlayerDatabase
 {
-    public class TPlayerDatabaseConfig : ConfigurationBase
+    public class PlayerDatabaseConfig : ConfigurationBase
     {
         [JsonProperty(Order = 3)]
         public DatabaseData Database { get; set; }
@@ -18,7 +18,7 @@ namespace Tavstal.TPlayerDatabase
         }
 
         // Required because of the library
-        public TPlayerDatabaseConfig() { }
-        public TPlayerDatabaseConfig(string fileName, string path) : base(fileName, path) { }
+        public PlayerDatabaseConfig() { }
+        public PlayerDatabaseConfig(string fileName, string path) : base(fileName, path) { }
     }
 }
