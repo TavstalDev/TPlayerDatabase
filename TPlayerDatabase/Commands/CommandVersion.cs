@@ -12,7 +12,7 @@ namespace Tavstal.TPlayerDatabase.Commands
         public string Help => "Gets the version of the plugin";
         public string Syntax => "";
         public List<string> Aliases => new List<string>();
-        public List<string> Permissions => new List<string> { "example.command.version" };
+        public List<string> Permissions => new List<string> { "tplayerdatabase.command.version" };
 
 
         public void Execute(IRocketPlayer caller, string[] command)
@@ -25,8 +25,8 @@ namespace Tavstal.TPlayerDatabase.Commands
             TPlayerDatabase.Instance.SendPlainCommandReply(caller, $"# Github: https://github.com/TavstalDev/TLibrary/tree/master");
             #endregion
             TPlayerDatabase.Instance.SendPlainCommandReply(caller, "#########################################");
-            TPlayerDatabase.Instance.SendPlainCommandReply(caller, string.Format("# Build Version: {0}", TPlayerDatabase.Version));
-            TPlayerDatabase.Instance.SendPlainCommandReply(caller, string.Format("# Build Date: {0}", TPlayerDatabase.BuildDate));
+            TPlayerDatabase.Instance.SendPlainCommandReply(caller, $"# Build Version: {TPlayerDatabase.Version}");
+            TPlayerDatabase.Instance.SendPlainCommandReply(caller, $"# Build Date: {TPlayerDatabase.BuildDate}");
             TPlayerDatabase.Instance.SendPlainCommandReply(caller, "#########################################");
         }
     }
