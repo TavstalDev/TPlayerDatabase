@@ -55,8 +55,8 @@ namespace Tavstal.TPlayerDatabase.Utils.Managers
             }
             catch (Exception ex)
             {
-                TPlayerDatabase.Logger.LogException("Error in checkSchema:");
-                TPlayerDatabase.Logger.LogError(ex);
+                TPlayerDatabase.Logger.Exception("Error in checkSchema:");
+                TPlayerDatabase.Logger.Error(ex);
             }
         }
 
