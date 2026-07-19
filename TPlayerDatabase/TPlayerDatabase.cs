@@ -1,6 +1,9 @@
 ﻿using System;
 using SDG.Unturned;
 using System.Collections.Generic;
+using System.Text;
+using Tavstal.TLibrary.Extensions;
+using Tavstal.TLibrary.Models.Logging;
 using Tavstal.TLibrary.Models.Plugin;
 using Tavstal.TPlayerDatabase.Utils.Handlers;
 using Tavstal.TPlayerDatabase.Utils.Managers;
@@ -8,81 +11,107 @@ using Tavstal.TPlayerDatabase.Utils.Managers;
 namespace Tavstal.TPlayerDatabase
 {
     /// <summary>
-    /// The main plugin class.
+    /// Main entry point for the TPlayerDatabase plugin. Handles initialization,
+    /// event registration, and lifecycle management for the player database system.
     /// </summary>
     // ReSharper disable once InconsistentNaming
     public class TPlayerDatabase : PluginBase<PlayerDatabaseConfig>
     {
-        public static TPlayerDatabase Instance { get; private set; }
-        public new static readonly TLogger Logger = new TLogger("TPlayerDatabase", false);
-        public static DatabaseManager DatabaseManager { get; private set; }
+        /// <summary>
+        /// Gets the singleton instance of the plugin.
+        /// </summary>
+        public static TPlayerDatabase Instance { get; private set; } = null!;
+
+        /// <summary>
+        /// Gets the database manager responsible for player data persistence.
+        /// </summary>
+        public static DatabaseManager DatabaseManager { get; private set; } = null!;
         
         /// <summary>
-        /// Used to prevent error spamming that is related to database configuration.
+        /// Gets or sets a flag indicating whether the database connection authentication has failed.
+        /// Used to prevent repeated error logging and trigger an automatic plugin unload.
         /// </summary>
         public static bool IsConnectionAuthFailed { get; set; }
 
         /// <summary>
-        /// Fired when the plugin is loaded.
+        /// Called before the plugin is loaded. Prints the plugin banner and build information to the console.
+        /// </summary>
+        public override void OnPreLoad()
+        {
+            Instance = this;
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("────────────────────────────────────────────────────────");
+            sb.AppendLine();
+            sb.AppendLine("████████╗██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗ ██████╗ ██████╗");
+            sb.AppendLine("╚══██╔══╝██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗██╔══██╗██╔══██╗");
+            sb.AppendLine("   ██║   ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝██║  ██║██████╔");
+            sb.AppendLine("   ██║   ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗██║  ██║██╔══██╗");
+            sb.AppendLine("   ██║   ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║██████╔╝██████╔╝");
+            sb.AppendLine("   ╚═╝   ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═════╝ ╚═════╝");
+            sb.AppendLine();
+            sb.AppendLine("[ About ]");
+            sb.AppendLine(" ▸ Developer : Tavstal");
+            sb.AppendLine(" ▸ Discord   : @Tavstal");
+            sb.AppendLine(" ▸ Website   : https://redstoneplugins.com");
+            sb.AppendLine(" ▸ GitHub    : https://github.com/TavstalDev");
+            sb.AppendLine();
+            sb.AppendLine("[ Build ]");
+            sb.AppendLine($" ▸ Version   : {Version}");
+            sb.AppendLine($" ▸ Build Date: {BuildDate} UTC");
+            sb.AppendLine($" ▸ TLibrary  : {LibraryVersion}");
+            sb.AppendLine();
+            sb.AppendLine("[ Support ]");
+            sb.AppendLine(" ▸ Report issues or request features:");
+            sb.AppendLine(" ▸ https://github.com/TavstalDev/TPlayerDatabase/issues");
+            sb.AppendLine();
+            sb.AppendLine("────────────────────────────────────────────────────────");
+            Logger.Log(ELogLevel.COMMAND, sb.ToString(), includePrefixes: false, color:  ConsoleColor.Cyan);
+        }
+        
+        /// <summary>
+        /// Called when the plugin is loaded. Subscribes to level events, attaches player
+        /// event handlers, and initializes the database manager.
         /// </summary>
         public override void OnLoad()
         {
-            Instance = this;
-            // Attach event, which will be fired when all plugins are loaded.
             Level.onPostLevelLoaded += Event_OnPluginsLoaded;
-            // Attach player related events
             PlayerEventHandler.AttachEvents();
-
-            Logger.Log("████████╗██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗ ██████╗ ██████╗", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("╚══██╔══╝██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗██╔══██╗██╔══██╗", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("   ██║   ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝██║  ██║██████╔", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("   ██║   ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗██║  ██║██╔══██╗", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("   ██║   ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║██████╔╝██████╔╝", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("   ╚═╝   ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═════╝ ╚═════╝ ", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log("#       Thanks for using this plugin!   #", prefix: null);
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log("# Developed By: Tavstal", prefix: null);
-            Logger.Log("# Discord:      @Tavstal", prefix: null);
-            Logger.Log("# Website:      https://redstoneplugins.com", prefix: null);
-            Logger.Log("# My GitHub:    https://tavstaldev.github.io", prefix: null);
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log($"# Plugin Version:    {Version}", prefix: null);
-            Logger.Log($"# Build Date:        {BuildDate}", prefix: null);
-            Logger.Log($"# TLibrary Version:  {LibraryVersion}", prefix: null);
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log("# Found an issue or have a suggestion?", prefix: null);
-            Logger.Log("# Report it here: https://github.com/TavstalDev/TPlayerDatabase/issues", prefix: null); 
-            Logger.Log("#########################################", prefix: null);
-
+            
             DatabaseManager = new DatabaseManager(this, Config);
             if (IsConnectionAuthFailed)
                 return;
 
-            Logger.Log($"# {Name} has been loaded.");
+            Logger.Info($"# {Name} has been successfully loaded.");
         }
 
         /// <summary>
-        /// Fired when the plugin is unloaded.
+        /// Called when the plugin is unloaded. Detaches all event handlers and cleans up resources.
         /// </summary>
         public override void OnUnLoad()
         {
             Level.onPostLevelLoaded -= Event_OnPluginsLoaded;
             PlayerEventHandler.DetachEvents();
-            Logger.Log($"# {Name} has been successfully unloaded.");
+            Logger.Info($"# {Name} has been successfully unloaded.");
         }
 
+        /// <summary>
+        /// Handles the post-level-loaded event. If database authentication has failed,
+        /// unloads the plugin to prevent further errors.
+        /// </summary>
+        /// <param name="i">The level index that was loaded.</param>
         private void Event_OnPluginsLoaded(int i)
         {
-            if (IsConnectionAuthFailed)
-            {
-                Logger.Warning($"# Unloading {GetPluginName()} due to database authentication error.");
-                UnloadPlugin();
-                //return;
-            }
+            if (!IsConnectionAuthFailed)
+                return;
+            Logger.Warning($"# Unloading {GetPluginName()} due to database authentication error.");
+            UnloadPlugin();
+
         }
 
 
+        /// <summary>
+        /// Gets the default localization dictionary for the plugin.
+        /// </summary>
         public override Dictionary<string, string> DefaultLocalization => new Dictionary<string, string>();
     }
 }

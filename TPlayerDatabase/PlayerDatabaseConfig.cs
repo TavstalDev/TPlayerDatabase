@@ -1,24 +1,52 @@
-﻿using Newtonsoft.Json;
+﻿using Tavstal.TLibrary.Models.Config;
+using Tavstal.TLibrary.Models.Logging;
 using Tavstal.TPlayerDatabase.Models;
-using Tavstal.TLibrary.Models.Plugin;
+using YamlDotNet.Serialization;
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace Tavstal.TPlayerDatabase
 {
-    public class PlayerDatabaseConfig : ConfigurationBase
+    /// <summary>
+    /// Represents the YAML-serialized configuration for the TPlayerDatabase plugin.
+    /// Contains database connection settings and general plugin options.
+    /// </summary>
+    public class PlayerDatabaseConfig : YamlConfiguration
     {
-        [JsonProperty(Order = 3)]
+        /// <summary>
+        /// Gets or sets the database connection and table configuration.
+        /// </summary>
+        [YamlMember(Order = 3)]
         public DatabaseData Database { get; set; }
 
+        /// <summary>
+        /// Populates the configuration with default values, including locale, log level,
+        /// and a default database configuration with the <c>tpdb_</c> table prefix.
+        /// </summary>
         public override void LoadDefaults()
         {
-            DebugMode = false;
             Locale = "en";
+            LogLevel = ELogLevel.INFO;
             DownloadLocalePacks = true;
-            Database = new DatabaseData("tpdb_players");
+            Database = new DatabaseData("tpdb_");
         }
 
-        // Required because of the library
-        public PlayerDatabaseConfig() { }
-        public PlayerDatabaseConfig(string fileName, string path) : base(fileName, path) { }
+        /// <summary>
+        /// Initializes a new instance of <see cref="PlayerDatabaseConfig"/> with default database settings.
+        /// Required by the serialization library.
+        /// </summary>
+        public PlayerDatabaseConfig()
+        {
+            Database = new DatabaseData("tpdb_");
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="PlayerDatabaseConfig"/> with the specified file name and path.
+        /// </summary>
+        /// <param name="fileName">The name of the configuration file.</param>
+        /// <param name="path">The directory path where the configuration file is located.</param>
+        public PlayerDatabaseConfig(string fileName, string path) : base(fileName, path)
+        {
+            Database = new DatabaseData("tpdb_");
+        }
     }
 }
