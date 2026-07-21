@@ -1,5 +1,4 @@
 ﻿using Tavstal.TLibrary.Models.Config;
-using Tavstal.TLibrary.Models.Logging;
 using Tavstal.TPlayerDatabase.Models;
 using YamlDotNet.Serialization;
 // ReSharper disable ClassNeverInstantiated.Global
@@ -24,10 +23,11 @@ namespace Tavstal.TPlayerDatabase
         /// </summary>
         public override void LoadDefaults()
         {
-            Locale = "en";
-            LogLevel = ELogLevel.INFO;
-            DownloadLocalePacks = true;
-            Database = new DatabaseData("tpdb_");
+            General = new GeneralConfig
+            {
+                MessageIcon = "https://raw.githubusercontent.com/TavstalDev/TPlayerDatabase/refs/heads/master/assets/icon.png"
+            };
+            Database = new DatabaseData();
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Tavstal.TPlayerDatabase
         /// </summary>
         public PlayerDatabaseConfig()
         {
-            Database = new DatabaseData("tpdb_");
+            Database = new DatabaseData();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Tavstal.TPlayerDatabase
         /// <param name="path">The directory path where the configuration file is located.</param>
         public PlayerDatabaseConfig(string fileName, string path) : base(fileName, path)
         {
-            Database = new DatabaseData("tpdb_");
+            Database = new DatabaseData();
         }
     }
 }

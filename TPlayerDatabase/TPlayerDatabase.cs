@@ -26,12 +26,6 @@ namespace Tavstal.TPlayerDatabase
         /// Gets the database manager responsible for player data persistence.
         /// </summary>
         public static DatabaseManager DatabaseManager { get; private set; } = null!;
-        
-        /// <summary>
-        /// Gets or sets a flag indicating whether the database connection authentication has failed.
-        /// Used to prevent repeated error logging and trigger an automatic plugin unload.
-        /// </summary>
-        public static bool IsConnectionAuthFailed { get; set; }
 
         /// <summary>
         /// Called before the plugin is loaded. Prints the plugin banner and build information to the console.
@@ -78,7 +72,7 @@ namespace Tavstal.TPlayerDatabase
             PlayerEventHandler.AttachEvents();
             
             DatabaseManager = new DatabaseManager(this, Config);
-            if (IsConnectionAuthFailed)
+            if (DatabaseManager.IsAuthenticationFailed)
                 return;
 
             Logger.Info($"# {Name} has been successfully loaded.");
@@ -101,14 +95,13 @@ namespace Tavstal.TPlayerDatabase
         /// <param name="i">The level index that was loaded.</param>
         private void Event_OnPluginsLoaded(int i)
         {
-            if (!IsConnectionAuthFailed)
+            if (DatabaseManager == null || !DatabaseManager.IsAuthenticationFailed)
                 return;
             Logger.Warning($"# Unloading {GetPluginName()} due to database authentication error.");
             UnloadPlugin();
 
         }
-
-
+        
         /// <summary>
         /// Gets the default localization dictionary for the plugin.
         /// </summary>
