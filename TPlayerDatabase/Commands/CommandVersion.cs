@@ -36,10 +36,16 @@ namespace Tavstal.TPlayerDatabase.Commands
         /// <param name="command">The command arguments (unused).</param>
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            TPlayerDatabase.Instance.SendPlainCommandReply(caller, "#########################################");
-            TPlayerDatabase.Instance.SendPlainCommandReply(caller, $"# Build Version: {TPlayerDatabase.Version}");
-            TPlayerDatabase.Instance.SendPlainCommandReply(caller, $"# Build Date: {TPlayerDatabase.BuildDate}");
-            TPlayerDatabase.Instance.SendPlainCommandReply(caller, "#########################################");
+            var instance = TPlayerDatabase.Instance;
+            var config = instance.Config.General;
+            var icon = config.MessageIcon;
+            string message = string.Join(System.Environment.NewLine, 
+                $"&b&l[{instance.GetPluginName()}]&r System Info:",
+                $"&b • Version: &r{TPlayerDatabase.Version}",
+                $"&b • Build Date: &r{TPlayerDatabase.BuildDate}",
+                "&b • Developer: &rTavstal");
+            
+            instance.SendPlainCommandReply(caller, message, icon);
         }
     }
 }
